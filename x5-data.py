@@ -7,6 +7,7 @@ import pendulum
 
 
 data_path = '/opt/x5'
+archive_name = 'retailhero-uplift.zip'
 
 dag = DAG(
     dag_id="x5-data-preparation",
@@ -14,23 +15,14 @@ dag = DAG(
     start_date=pendulum.datetime(2022, 1, 1, tz="UTC"),
 )
 
-clients_data = PythonOperator(
-    task_id='clients_data',
-    python_callable= pd.read_csv,
-    op_kwargs = {"filepath_or_buffer" : os.path.join(data_path, 'clients.csv')},
-    dag=dag,
-)
 
-products_data = PythonOperator(
-    task_id='products_data',
-    python_callable= pd.read_csv,
-    op_kwargs = {"filepath_or_buffer" : os.path.join(data_path, 'products.csv')},
-    dag=dag,
-)
+def download_zip_archive():
+    if not archive_name in os.system('ls'):
+        os.system('wget https://storage.yandexcloud.net/datasouls-ods/materials/9c6913e5/retailhero-uplift.zip')
 
-purchases_data = PythonOperator(
-    task_id='purchases_data',
-    python_callable= pd.read_csv,
-    op_kwargs = {"filepath_or_buffer" : os.path.join(data_path, 'purchases.csv')},
+download_zip = PythonOperator(
+    task_id='download_zip',
+    python_callable = download_zip_archive,
+    op_kwargs = {},
     dag=dag,
 )
