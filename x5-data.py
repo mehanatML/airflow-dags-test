@@ -3,12 +3,15 @@ from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import BranchPythonOperator, PythonOperator
 import pandas as pd
 import os
+import pendulum
+
 
 data_path = '/opt/x5'
 
 dag = DAG(
     dag_id="x5-data-preparation",
-    schedule_interval="1 * * * * *"
+    schedule_interval="1 * * * * *",
+    start_date=pendulum.datetime(2022, 1, 1, tz="UTC"),
 )
 
 clients_data = PythonOperator(
