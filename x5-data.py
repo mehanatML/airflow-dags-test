@@ -11,7 +11,7 @@ archive_name = 'retailhero-uplift.zip'
 
 dag = DAG(
     dag_id="x5-data-preparation",
-    schedule_interval="*/10 * * * *",
+    schedule_interval="@daily",
     start_date=pendulum.datetime(2022, 1, 1, tz="UTC"),
 )
 
