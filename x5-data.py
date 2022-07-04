@@ -18,7 +18,10 @@ dag = DAG(
 
 def download_zip_archive():
     if not archive_name in os.listdir():
-        os.system('wget https://storage.yandexcloud.net/datasouls-ods/materials/9c6913e5/retailhero-uplift.zip')
+        os.system('wget -P ./ https://storage.yandexcloud.net/datasouls-ods/materials/9c6913e5/retailhero-uplift.zip')
+
+def unzip_data_archive():
+    os.system(f'unzip ./{archive_name}')
 
 download_zip = PythonOperator(
     task_id='download_zip',
@@ -26,3 +29,13 @@ download_zip = PythonOperator(
     op_kwargs = {},
     dag=dag,
 )
+
+unzip_archive = PythonOperator(
+    task_id='unzip_archive',
+    python_callable = unzip_data_archive,
+    op_kwargs = {},
+    dag=dag,
+)
+
+download_zip >> unzip_archive
+
