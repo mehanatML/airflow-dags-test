@@ -75,5 +75,17 @@ ge_client_data = GreatExpectationsOperator(
     checkpoint_name="getting_started",
 )
 
-download_zip >> unzip_archive >> ge_client_data >> data_peprocessing
+def branch_func(ti):
+    xcom_value = int(ti.xcom_pull(task_ids="ge_client_data"))
+    print('#### xcom_value', xcom_value)
+    return 'data_peprocessing'
+
+
+next_or_email = BranchPythonOperator(
+    task_id="check_results",
+    python_callable=branch_func,
+    dag=dag,
+)
+
+download_zip >> unzip_archive >> ge_client_data >> next_or_email >> data_peprocessing
 
