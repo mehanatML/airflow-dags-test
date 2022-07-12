@@ -5,7 +5,14 @@ import pandas as pd
 import os
 import pendulum
 
+from great_expectations_provider.operators.great_expectations import GreatExpectationsOperator
+from great_expectations.core.batch import BatchRequest
+from great_expectations.data_context.types.base import (
+    DataContextConfig,
+    CheckpointConfig
+)
 
+ge_root_dir='/opt/x5/great_expectations'
 data_path = '/data'
 archive_name = 'retailhero-uplift.zip'
 
@@ -62,5 +69,11 @@ data_peprocessing = PythonOperator(
     dag=dag,
 )
 
-download_zip >> unzip_archive >> data_peprocessing
+ge_client_data = GreatExpectationsOperator(
+    task_id="ge_client_data",
+    data_context_root_dir=ge_root_dir,
+    checkpoint_name="getting_started",
+)
+
+download_zip >> unzip_archive >> ge_client_data >> data_peprocessing
 
