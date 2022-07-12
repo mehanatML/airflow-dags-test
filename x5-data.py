@@ -73,6 +73,7 @@ ge_client_data = GreatExpectationsOperator(
     task_id="ge_client_data",
     data_context_root_dir=ge_root_dir,
     checkpoint_name="getting_started",
+    xcom_push=True,
 )
 
 def branch_func(ti):
